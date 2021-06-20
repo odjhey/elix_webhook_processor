@@ -7,7 +7,17 @@ defmodule ElixWebhookProcessor.MixProject do
       version: "0.1.0",
       elixir: "~> 1.12",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      # add releases configuration
+      releases: [
+        # we can name releases anything, this will be prod's config
+        prod: [
+          # we'll be deploying to Linux only
+          include_executables_for: [:unix],
+          # have Mix automatically create a tarball after assembly
+          steps: [:assemble, :tar]
+        ]
+      ]
     ]
   end
 
