@@ -45,3 +45,4 @@ RUN chown -R app: ./prod
 USER app
 
 CMD ["./prod/rel/prod/bin/prod", "start"]
+EXPOSE 8080
