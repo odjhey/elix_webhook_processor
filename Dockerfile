@@ -35,7 +35,7 @@ FROM alpine AS app
 ENV LANG=C.UTF-8
 
 # Install openssl
-RUN apk update && apk add openssl ncurses-libs
+RUN apk update && apk add openssl libgcc libstdc++ ncurses-libs
 
 # Copy over the build artifact from the previous step and create a non root user
 RUN adduser -h /home/app -D app
