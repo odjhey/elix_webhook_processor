@@ -42,6 +42,7 @@ RUN apk update && apk add openssl libgcc libstdc++ ncurses-libs
 RUN adduser -h /home/app -D app
 WORKDIR /home/app
 COPY --from=app_builder /app/_build .
+COPY --from=app_builder /app/README.md .
 RUN chown -R app: ./prod
 USER app
 
