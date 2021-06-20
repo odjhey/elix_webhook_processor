@@ -1,4 +1,4 @@
-FROM elixir:1.12
+FROM elixir:1.12-alpine AS app_builder
 
 ARG ENV=prod
 ENV MIX_ENV=$ENV
@@ -26,7 +26,22 @@ RUN mix deps.compile
 # RUN mix phx.digest
 RUN mix release
 
-CMD ["/app/_build/prod/rel/prod/bin/prod", "start"]
+# CMD ["/app/_build/prod/rel/prod/bin/prod", "start"]
+# EXPOSE 8080
 
-EXPOSE 8080
+# ---- Application Stage ----
+FROM alpine AS app
 
+ENV LANG=C.UTF-8
+
+# Install openssl
+RUN apk update && apk add openssl ncurses-libs
+
+# Copy over the build artifact from the previous step and create a non root user
+RUN adduser -h /home/app -D app
+WORKDIR /home/app
+COPY --from=app_builder /app/_build .
+RUN chown -R app: ./prod
+USER app
+
+CMD ["./prod/rel/prod/bin/prod", "start"]
