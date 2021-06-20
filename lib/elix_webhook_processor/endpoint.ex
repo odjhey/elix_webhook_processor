@@ -28,6 +28,16 @@ defmodule ElixWebhookProcessor.Endpoint do
     send_resp(conn, status, body)
   end
 
+  post "/version" do
+    resp =
+      case :application.get_key(:elix_webhook_processor, :vsn) do
+        {:ok, vsn} -> vsn
+        _ -> "version not found :("
+      end
+
+    send_resp(conn, 200, resp)
+  end
+
   defp process_events(events) when is_list(events) do
     Poison.encode!(%{response: "Received Events!"})
   end
