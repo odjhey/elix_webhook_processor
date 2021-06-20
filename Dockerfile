@@ -1,22 +1,32 @@
-# ./Dockerfile
-# ENV matching production target host
-# We'll be using a Debian linux EC2 instance to run this app
-# See all official elixir docker images here: https://hub.docker.com/_/elixir
 FROM elixir:1.12
 
-# By default, if we're cutting a release it'll likely be prod
 ARG ENV=prod
-
-# We'll pass in ENV as a build arg to docker
 ENV MIX_ENV=$ENV
 
-# Our working directory within the container
-WORKDIR /opt/build
+# Install hex and rebar
+RUN mix local.hex --force && \
+    mix local.rebar --force
 
-# Add our release script to the container, named `release` and
-# placed into the ./bin/ directory in our project root
-ADD ./bin/release ./bin/release
+# Create the application build directory
+RUN mkdir /app
+WORKDIR /app
 
-# This is our entry point, make sure to run
-# `chmod +x bin/release` to make this script executable
-CMD ["bin/release", $ENV]
+# Make better strategy on copying files
+COPY bin ./bin
+COPY config ./config
+COPY lib ./lib
+COPY test ./test
+COPY .formatter.exs ./.formatter.exs
+COPY mix.exs ./mix.exs
+COPY mix.lock ./mix.lock
+
+# Fetch the application dependencies and build the application
+RUN mix deps.get
+RUN mix deps.compile
+# RUN mix phx.digest
+RUN mix release
+
+CMD ["/app/_build/prod/rel/prod/bin/prod", "start"]
+
+EXPOSE 8080
+
