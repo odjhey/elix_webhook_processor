@@ -38,6 +38,11 @@ defmodule ElixWebhookProcessor.Endpoint do
     send_resp(conn, 200, resp)
   end
 
+  get "/" do
+    {:ok, content} = File.read("README.md")
+    send_resp(conn, 200, content)
+  end
+
   defp process_events(events) when is_list(events) do
     Poison.encode!(%{response: "Received Events!"})
   end

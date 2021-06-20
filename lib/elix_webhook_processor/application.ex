@@ -2,9 +2,12 @@ defmodule ElixWebhookProcessor.Application do
   @moduledoc "OTP App spec for WebhookProcessor"
 
   use Application
+  require Logger
 
   @impl true
   def start(_type, _args) do
+    Logger.info("Listening to #{Application.get_env(:elix_webhook_processor, :port)}")
+
     children = [
       Plug.Cowboy.child_spec(
         scheme: :http,
