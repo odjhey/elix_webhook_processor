@@ -19,7 +19,7 @@ defmodule Mix.Tasks.Docker do
   end
 
   defp build_image(env) do
-    docker("build --build-arg ENV=#{env} -t #{app_name()}:latest .")
+    docker("build -f Dockerfile.mix --build-arg ENV=#{env} -t #{app_name()}:latest .")
   end
 
   defp docker(cmd) do
