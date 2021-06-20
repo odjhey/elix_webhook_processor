@@ -19,6 +19,7 @@ COPY test ./test
 COPY .formatter.exs ./.formatter.exs
 COPY mix.exs ./mix.exs
 COPY mix.lock ./mix.lock
+COPY README.md ./README.md
 
 # Fetch the application dependencies and build the application
 RUN mix deps.get
